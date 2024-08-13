@@ -11,10 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('languages', function (Blueprint $table) {
+        Schema::create('logs', function (Blueprint $table) {
             $table->id();
-            $table->string('language');
-            $table->string('level');
+            $table->string('dni',20)->nullable();
+            $table->integer("level")->default(0);
+            $table->string("context")->default("");
+            $table->text("message")->nullable();
+
+            $table->index('dni');
             $table->timestamps();
         });
     }
@@ -24,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('languages');
+        Schema::dropIfExists('logs');
     }
 };

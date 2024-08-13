@@ -11,14 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('turns', function (Blueprint $table) {
             $table->id();
-
-            $table->unsignedBigInteger('role_id');
-            $table->foreign('role_id')
-                ->references('id')
-                ->on('roles')
-                ->onDelete('cascade');
 
             $table->unsignedBigInteger('customer_id')->nullable();
             $table->foreign('customer_id')
@@ -32,12 +26,13 @@ return new class extends Migration
                 ->on('extras')
                 ->onDelete('cascade');
 
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->boolean('extra')->nullable();
-            $table->rememberToken();
+            $table->dateTime('date');
+            $table->string('entry_time');
+            $table->string('departure_time');
+            $table->string('total_hours');
+            $table->enum('status', ['pendiente', 'pagado', 'cancelado', 'ejecutado'])->default('pendiente');
+            $table->double('hourly_rate')->nullable(); //precio x hora €
+            $table->double('total')->nullable(); // total generado €
             $table->timestamps();
         });
     }
@@ -47,6 +42,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('turns');
     }
 };

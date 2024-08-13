@@ -11,13 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+        //pdt de cobro/pago (segun el signo) , multas bonos(recargos/descuentos),total pagado y un historico de las transacciones de pago
+        Schema::create('payments', function (Blueprint $table) {
             $table->id();
 
-            $table->unsignedBigInteger('role_id');
-            $table->foreign('role_id')
+            $table->unsignedBigInteger('extra_id')->nullable();
+            $table->foreign('extra_id')
                 ->references('id')
-                ->on('roles')
+                ->on('extras')
                 ->onDelete('cascade');
 
             $table->unsignedBigInteger('customer_id')->nullable();
@@ -26,18 +27,18 @@ return new class extends Migration
                 ->on('customers')
                 ->onDelete('cascade');
 
-            $table->unsignedBigInteger('extra_id')->nullable();
-            $table->foreign('extra_id')
+            $table->unsignedBigInteger('turn_id')->nullable();
+            $table->foreign('turn_id')
                 ->references('id')
-                ->on('extras')
+                ->on('turns')
                 ->onDelete('cascade');
 
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->boolean('extra')->nullable();
-            $table->rememberToken();
+            $table->enum('status', ['pendiente', 'rechazado', 'pagado']);
+            $table->float('multas', 8, 2);
+            $table->float('bonos', 8, 2);
+            $table->float('total', 8, 2);
+            $table->dateTime('fecha_pago');
+
             $table->timestamps();
         });
     }
@@ -47,6 +48,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('payments');
     }
 };
